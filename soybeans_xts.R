@@ -1,5 +1,3 @@
-setwd("C:/Users/Ben/Desktop/Kibot_Data") #Set the working directory Asus
-#setwd("~/Desktop/R_projects/soybeans")  #set wd Apple
 
 library(tidyr)
 library(dplyr)
