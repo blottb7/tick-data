@@ -1,18 +1,19 @@
-
+#Libraries
 library(tidyr)
 library(dplyr)
 library(xts)
 library(lubridate)
 
-df <- read.csv("soybeans_sample_1week.csv")  #reads in a two day sample of soybeans data (June 1-2, 2016)
+df <- read.csv("soybeans_sample_1week.csv")  #reads in a one week sample of soybeans tick data (June 1-7, 2016)
 
 #Global vars
 breakout <- 2.00  #set the breakout distance to 2.00
 
+#convert .csv to xts
 df1 <- df %>%
         select(-X)  #removes "X" col
 
-df1$datetime <- as.POSIXct(paste(df1$date, df1$time), format = "%m/%d/%Y %H:%M:%S")  #combines date and time cols and convert to time format
+df1$datetime <- as.POSIXct(paste(df1$date, df1$time), format = "%m/%d/%Y %H:%M:%S")  #combines date and time cols
 
 df2 <- df1 %>%
         select(datetime, price, volume = size) %>%  #removes individual data and time cols
@@ -40,8 +41,8 @@ orh_bo_matrix <- coredata(orh_bo_index)  #creates a matrix of the index breakout
 #I want to save this for later incorporation, but it's not high priority right now.
 #period.max(df_open$price, INDEX = endpoints(df_open, on = "days")) + breakout  #this is supposedly the fastest: https://www.quantmod.com/examples/data/
                                                                                 #it does the same thing as apply.daily
-#####
 
+#####
 ep_daily <- endpoints(df_main, on = "days")  #creates a daily index
 daily_last_index <- ep_daily[-1]  #removes the "0" value at the beginning
 daily_last_matrix <- t(t(daily_last_index))  #creates a matrix of last obs of day indexes
