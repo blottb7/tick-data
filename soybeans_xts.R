@@ -51,3 +51,6 @@ i <- 2
 for(i in 2:ndays(df_main)) {
   df_bo_all <- df_main[(df_bo_indexes[i-1,2]+df_bo_indexes[i,1]):df_bo_indexes[i,2]]
 } 
+#
+#this doesn't work: window(df_main, start = df_main[2074,], end = df_main[52155,])
+#this doesn't work: window(df_main, start = df_main[2074], end = df_main[52155])
