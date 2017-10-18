@@ -5,6 +5,7 @@ library(xts)
 library(lubridate)
 library(timetk)
 library(tidyquant)
+library(tidyverse)
 
 df <- read.csv("soybeans_sample_1week.csv")  #reads in a one week sample of soybeans tick data (June 1-7, 2016)
 
