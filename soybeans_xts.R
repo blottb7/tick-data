@@ -54,3 +54,11 @@ for(i in 2:ndays(df_main)) {
 #
 #this doesn't work: window(df_main, start = df_main[2074,], end = df_main[52155,])
 #this doesn't work: window(df_main, start = df_main[2074], end = df_main[52155])
+#this doesn't work: window(df_main, start = df_main[df_bo_indexes[1,1], end = df_main[df_bo_indexes[1,2]]])
+# get error messages: Error in which(in.index & all.indexes >= start) : 
+#  dims [product 2] do not match the length of object [258363]
+#In addition: Warning messages:
+#1: In which(in.index & all.indexes >= start) :
+#  Incompatible methods (">=.POSIXt", "Ops.xts") for ">="
+#2: In all.indexes >= start :
+#  longer object length is not a multiple of shorter object length                            
