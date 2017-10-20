@@ -29,6 +29,12 @@ df_xts <- make.index.unique(df_xts)  #makes each index unique; very important
 df_xts1 <- df_xts["T09:30/T14:14"]  #subset to market hours only; MARKET HOURS ONLY DF
 
 ##### ##### #####
+df_xts2 <- split(df_xts1, "days")
+df_xts3 <- lapply(df_xts2, cummax)
+df_xts4 <- do.call(rbind, df_xts3)
+names(df_xts4) <- c("daily_cummax_price", "daily_cummax_volume")
+df_xts5 <- merge(df_xts1, df_xts4)
+#
 
 df_open <- df_xts["T09:30/T09:44"]  #subsets opening range interval; OPENINGS MINUTES ONLY DF
 df_open1 <- split(df_open, "days")
