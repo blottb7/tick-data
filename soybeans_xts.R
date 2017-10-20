@@ -1,3 +1,5 @@
+setwd("~/Desktop/R_projects/soybeans")
+
 #Libraries
 library(tidyr)
 library(dplyr)
@@ -29,6 +31,12 @@ df_xts1 <- df_xts["T09:30/T14:14"]  #subset to market hours only; MARKET HOURS O
 ##### ##### #####
 
 df_open <- df_xts["T09:30/T09:44"]  #subsets opening range interval; OPENINGS MINUTES ONLY DF
+df_open1 <- split(df_open, "days")
+df_open2 <- lapply(df_open1, cummax)
+df_open3 <- do.call(rbind, df_open2)
+names(df_open3) <- c("opnRng_cummax_price", "opnRng_cummax_volume")
+df_open4 <- merge(df_open, df_open3)
+#
 df_main <- df_xts["T09:45/T14:14"]  #main part of soybeans trading day; MARKET HOURS ONLY NOT INCLUDING OPENING MINUTES
 
 ##### ##### #####
