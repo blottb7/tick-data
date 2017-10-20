@@ -60,3 +60,5 @@ df_breakout <- df_merged[which(df_merged$orh_bo == 1)]  #subsets data by "breako
 #  select(-price.1, -volume.1)  this doesn't work
 
 ##### ##### #####
+#NEXT:
+    #write next plan for code including retracement values in df_xts1.
