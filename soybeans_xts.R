@@ -60,36 +60,3 @@ df_breakout <- df_merged[which(df_merged$orh_bo == 1)]  #subsets data by "breako
 #  select(-price.1, -volume.1)  this doesn't work
 
 ##### ##### #####
-
-# orh <- apply.daily(df_open$price, max)  #saves opening range high in "orh"
-# orh_bo <- orh + breakout  #sets the daily high breakout level
-# orh_bo_index <- apply.daily(df_main, FUN = function(X) first(which(X %in% orh_bo)))  #gets index values of the breakout, relative to each day
-# orh_bo_matrix <- coredata(orh_bo_index)  #creates a matrix of the index breakout values
-
-#####
-
-# ep_daily <- endpoints(df_main, on = "days")  #creates a daily index
-# daily_last_index <- ep_daily[-1]  #removes the "0" value at the beginning
-# daily_last_matrix <- t(t(daily_last_index))  #creates a matrix of last obs of day indexes
-# df_bo_indexes <- bind_cols(data.frame(orh_bo_matrix), data.frame(daily_last_matrix))  #creates a df of the indexes to use for the breakout
-
-# #find the breakout indexes for each day
-# df_bo_day1 <- df_main[df_bo_indexes[1,1]:df_bo_indexes[1,2]]  #this is right; this finds the breakout indexes of the first day
-# 
-# #this is what needs fixing:
-# #find breakout indexes for days 2:ndays(df_main)
-# i <- 2
-# for(i in 2:ndays(df_main)) {
-#   df_bo_all <- df_main[(df_bo_indexes[i-1,2]+df_bo_indexes[i,1]):df_bo_indexes[i,2]]
-# } 
-#
-#this doesn't work: window(df_main, start = df_main[2074,], end = df_main[52155,])
-#this doesn't work: window(df_main, start = df_main[2074], end = df_main[52155])
-#this doesn't work: window(df_main, start = df_main[df_bo_indexes[1,1], end = df_main[df_bo_indexes[1,2]]])
-# get error messages: Error in which(in.index & all.indexes >= start) : 
-#  dims [product 2] do not match the length of object [258363]
-#In addition: Warning messages:
-#1: In which(in.index & all.indexes >= start) :
-#  Incompatible methods (">=.POSIXt", "Ops.xts") for ">="
-#2: In all.indexes >= start :
-#  longer object length is not a multiple of shorter object length
