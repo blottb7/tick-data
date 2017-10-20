@@ -41,21 +41,25 @@ df_open2 <- lapply(df_open1, cummax)
 df_open3 <- do.call(rbind, df_open2)
 names(df_open3) <- c("opnRng_cummax_price", "opnRng_cummax_volume")
 df_open4 <- merge(df_open, df_open3)
-#
-#merge df_open4 and df_xts5
-#assign all the missing values in df_xts5 the last value from df_open4$opnRng_cummax_price
-df_merged1 <- merge(df_open4, df_xts5)
-#, join = c("price", "volume"), fill = "last")
-df_merged <- rbind(df_open4, df_xts5)
-#df_merged$orh_bo <- FALSE
 
-#df_merged1 <- cbind(df_open4, df_xts5)  #is this better?
-#find tidyquant or whatever package fun to select out unwanted/duplicate col's.
+df_merged <- merge(df_open4, df_xts5)  #merge df_open4 and df_xts5
+
+  #NOTE: other args for merge: join = c("price", "volume"), fill = "last"
+  #TASKS: 1) assign all the missing values in df_xts5 the last value from df_open4$opnRng_cummax_price
+        # 2) #find tidyquant or whatever package fun to select out unwanted/duplicate col's.
+
+
+df_merged1 <- rbind(df_open4, df_xts5)  #this seems cleaner and faster, but drops cols from df_xts5
+#df_merged1 <- rbind(df_xts4, df_open4)  #this doesn't work
+
+df_merged$orh_bo <- FALSE
+df_merged$orh_bo <- ifelse((df_merged$daily_cummax_price - breakout) > df_merged$opnRng_cummax_price, TRUE, FALSE)
+
+
 #df_merged1 <- df_merged %>%
 #  select(-price.1, -volume.1)
-df_xts5$orh_bo <- FALSE
-df_xts5$orh_bo <- ifelse((df_xts5$daily_cummax_price - breakout) > df_open4$opnRng_cummax_price, TRUE, FALSE)
-
+#df_xts5$orh_bo <- FALSE
+#df_xts5$orh_bo <- ifelse((df_xts5$daily_cummax_price - breakout) > df_open4$opnRng_cummax_price, TRUE, FALSE)
 
 #
 #df_main <- df_xts["T09:45/T14:14"]  #main part of soybeans trading day; MARKET HOURS ONLY NOT INCLUDING OPENING MINUTES
@@ -93,4 +97,4 @@ for(i in 2:ndays(df_main)) {
 #1: In which(in.index & all.indexes >= start) :
 #  Incompatible methods (">=.POSIXt", "Ops.xts") for ">="
 #2: In all.indexes >= start :
-#  longer object length is not a multiple of shorter object length  
+#  longer object length is not a multiple of shorter object length   
