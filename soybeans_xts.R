@@ -45,7 +45,12 @@ df_open4 <- merge(df_open, df_open3)
 df_merged <- merge(df_open4, df_xts5)  #merge df_open4 and df_xts5
 
   #NOTE: other args for merge: join = c("price", "volume"), fill = "last"
-  #TASKS: 1) assign all the missing values in df_xts5 the last value from df_open4$opnRng_cummax_price
+  #TASKS:
+  #for all opnRng_cummax_price == NA, assign the last value
+df_merged$opnRng_cummax_price <- na.locf(df_merged$opnRng_cummax_price)
+df_merged$orh_bo <- FALSE
+df_merged$orh_bo <- ifelse((df_merged$daily_cummax_price - breakout) > df_merged$opnRng_cummax_price, TRUE, FALSE)
+df_breakout <- df_merged[which(df_merged$orh_bo == 1)]
         # 2) #find tidyquant or whatever package fun to select out unwanted/duplicate col's.
 
 
