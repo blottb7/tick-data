@@ -50,16 +50,18 @@ df_xts5$retracement_78.6 <- round(4 * (df_xts5[,"daily_cummax"] - retracement * 
 
 ##### ##### #####
 df_open <- df_xts["T09:30/T09:44"]  #subsets opening range interval; OPENINGS MINUTES ONLY DF
-df_open1 <- split(df_open, "days")
-df_open2 <- lapply(df_open1, cummax)
-df_open3 <- do.call(rbind, df_open2)
-names(df_open3) <- c("OR_daily_cummax", "OR_daily_cummax_volume")
+df_open1 <- split(df_open, "days")  #split opening range by days
+df_open2 <- lapply(df_open1, cummax)  #apply cummax fn to each day
+df_open3 <- do.call(rbind, df_open2)  #bind each day together
+names(df_open3) <- c("OR_daily_cummax", "OR_daily_cummax_volume")  #name new vars
 df_open3$OR_daily_cummax_volume <- NULL  #remove cummax volume
-df_open4 <- merge(df_open, df_open3)
+df_open4 <- merge(df_open, df_open3)  #merge new df to original opening range df_xts
 
-df_merged <- merge(df_open4, df_xts5)  #merge df_open4 and df_xts5; other args for merge: join = c("price", "volume"), fill = "last"
-#for all OR_daily_cummax == NA, assign the last value
-df_merged$OR_daily_cummax <- na.locf(df_merged$OR_daily_cummax)
+df_merged <- merge(df_xts5, df_open4)  #merge entire day w new vars to opening df
+df_merged$OR_daily_cummax <- na.locf(df_merged$OR_daily_cummax)  #for all OR_daily_cummax == NA, assign the last value
+
+df_merged$price.1 <- NULL  #remove duplicate columns
+df_merged$volume.1 <- NULL  #remove duplicate columns
 
 df_merged$orh_bo <- FALSE  #initializes conditional breakout value
 df_merged$orh_bo <- ifelse((df_merged$daily_cummax - breakout) > df_merged$OR_daily_cummax, TRUE, FALSE)
