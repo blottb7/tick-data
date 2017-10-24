@@ -31,17 +31,23 @@ df_xts <- make.index.unique(df_xts)  #makes each index unique; very important
 df_xts1 <- df_xts["T09:30/T14:14"]  #subset to market hours only; MARKET HOURS ONLY DF
 
 ##### ##### #####
-df_xts2 <- split(df_xts1, "days")
-df_xts3 <- lapply(df_xts2, cummax)
-df_xts3.1 <- lapply(df_xts2, cummin)
-df_xts4 <- do.call(rbind, df_xts3)
-df_xts4.1 <- do.call(rbind, df_xts3.1)
+df_xts2 <- split(df_xts1, "days")  #split df into days
+df_xts3 <- lapply(df_xts2, cummax)  #apply cummax fn to each day
+df_xts4 <- do.call(rbind, df_xts3)  #bind the results together in a new df
 
-#do.call("rbind", list(DF1, DF2, DF3))
-names(df_xts4) <- c("daily_cummax_price", "daily_cummax_volume")
-names(df_xts4.1) <- c("daily_cummin_price", "daily_cummin_volume")
-df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1)
-df_xts$retrace_78.6 <- df_xts5[,3] - df_xts5[,5]
+df_xts3.1 <- lapply(df_xts2, cummin)  #apply cummin fn to each day
+df_xts4.1 <- do.call(rbind, df_xts3.1)  #bind the results together in a new df
+
+names(df_xts4) <- c("daily_cummax", "daily_cummax_volume")  #name new vars
+names(df_xts4.1) <- c("daily_cummin", "daily_cummin_volume")  #name new vars
+
+df_xts4$daily_cummax_volume <- NULL  #remove unwanted cum-vol col's
+df_xts4.1$daily_cummin_volume <- NULL
+
+df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1)  #merge the two new df's with the original df
+#df_xts5$retrace_78.6 <- df_xts5[,3] - df_xts5[,4]
+df_xts5$retracement_78.6 <- df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"])
+
 df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1) %>%
         mutate(retrace = daily_cummax_price - daily_cummin_price)
 df_xts6 <- tq_mutate(df_xts5, 
