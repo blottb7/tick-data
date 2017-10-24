@@ -45,21 +45,22 @@ df_xts4$daily_cummax_volume <- NULL  #remove unwanted cum-vol col's
 df_xts4.1$daily_cummin_volume <- NULL
 
 df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1)  #merge the two new df's with the original df
-df_xts5$retracement_78.6 <- df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"])
+#df_xts5$retracement_78.6 <- df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"])
 df_xts5$retracement_78.6 <- round(4 * (df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"]))) / 4
 
-#
+##### ##### #####
 df_open <- df_xts["T09:30/T09:44"]  #subsets opening range interval; OPENINGS MINUTES ONLY DF
 df_open1 <- split(df_open, "days")
 df_open2 <- lapply(df_open1, cummax)
 df_open3 <- do.call(rbind, df_open2)
-names(df_open3) <- c("opnRng_cummax_price", "opnRng_cummax_volume")
+names(df_open3) <- c("OR_daily_cummax", "OR_daily_cummax_volume")
+df_open3$OR_daily_cummax_volume <- NULL  #remove cummax volume
 df_open4 <- merge(df_open, df_open3)
 
 df_merged <- merge(df_open4, df_xts5)  #merge df_open4 and df_xts5; other args for merge: join = c("price", "volume"), fill = "last"
-#for all opnRng_cummax_price == NA, assign the last value
-df_merged$opnRng_cummax_price <- na.locf(df_merged$opnRng_cummax_price)
+#for all OR_daily_cummax == NA, assign the last value
+df_merged$OR_daily_cummax <- na.locf(df_merged$OR_daily_cummax)
 
 df_merged$orh_bo <- FALSE  #initializes conditional breakout value
-df_merged$orh_bo <- ifelse((df_merged$daily_cummax_price - breakout) > df_merged$opnRng_cummax_price, TRUE, FALSE)
+df_merged$orh_bo <- ifelse((df_merged$daily_cummax - breakout) > df_merged$OR_daily_cummax, TRUE, FALSE)
 df_breakout <- df_merged[which(df_merged$orh_bo == 1)]  #subsets data by "breakout is True".
