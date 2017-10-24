@@ -45,14 +45,9 @@ df_xts4$daily_cummax_volume <- NULL  #remove unwanted cum-vol col's
 df_xts4.1$daily_cummin_volume <- NULL
 
 df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1)  #merge the two new df's with the original df
-#df_xts5$retrace_78.6 <- df_xts5[,3] - df_xts5[,4]
 df_xts5$retracement_78.6 <- df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"])
+df_xts5$retracement_78.6 <- round(4 * (df_xts5[,"daily_cummax"] - retracement * (df_xts5[,"daily_cummax"] - df_xts5[,"daily_cummin"]))) / 4
 
-df_xts5 <- merge(df_xts1, df_xts4, df_xts4.1) %>%
-        mutate(retrace = daily_cummax_price - daily_cummin_price)
-df_xts6 <- tq_mutate(df_xts5, 
-                     select = c(daily_cummax_price, daily_cummin_price),
-                     mutate_fun = diff)
 #
 df_open <- df_xts["T09:30/T09:44"]  #subsets opening range interval; OPENINGS MINUTES ONLY DF
 df_open1 <- split(df_open, "days")
