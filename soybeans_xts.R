@@ -64,5 +64,5 @@ df_merged$price.1 <- NULL  #remove duplicate columns
 df_merged$volume.1 <- NULL  #remove duplicate columns
 
 df_merged$orh_bo <- FALSE  #initializes conditional breakout value
-df_merged$orh_bo <- ifelse((df_merged$daily_cummax - breakout) > df_merged$OR_daily_cummax, TRUE, FALSE)
-df_breakout <- df_merged[which(df_merged$orh_bo == 1)]  #subsets data by "breakout is True".
+df_merged$orh_bo <- ifelse((df_merged$daily_cummax - breakout) > df_merged$OR_daily_cummax, TRUE, FALSE)  #assigns 1 to orh_bo once mkt has "broken out"
+df_breakout <- df_merged[which(df_merged$orh_bo == 1)]  #subsets data by "breakout is True"
